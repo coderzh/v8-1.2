@@ -3,9 +3,8 @@ cmake_minimum_required (VERSION 3.5)
 add_definitions(-D_XOPEN_SOURCE=600)
 add_definitions(-D_DARWIN_C_SOURCE)
 add_definitions(-DV8_TARGET_ARCH_X64)
+add_definitions(-DCMAKE_EXPORT_COMPILE_COMMANDS=YES)
 
-# set(CMAKE_C_COMPILER clang)
-# set(CMAKE_CXX_COMPILER clang++)
 set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fms-extensions -fno-strict-aliasing")
 set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fms-extensions -fno-strict-aliasing")
 
@@ -22,11 +21,6 @@ add_library(dtoa STATIC ${DTOA_SRC})
 target_compile_definitions(dtoa PRIVATE ENABLE_LOGGING_AND_PROFILING ENABLE_DISASSEMBLER DEBUG)
 set_target_properties(dtoa PROPERTIES COMPILE_FLAGS "-ansi -Werror -fno-rtti -fno-exceptions")
 target_link_libraries(dtoa PRIVATE Threads::Threads)
-
-# add_custom_target(
-#   always_run_target ALL
-#   DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/src/libraries.cc
-# )
 
 add_custom_command(
   OUTPUT libraries.cc
@@ -152,3 +146,56 @@ add_executable(v8_test test/main.cc)
 target_include_directories(v8_test PRIVATE include)
 target_link_libraries(v8_test v8)
 target_compile_features(v8_test PUBLIC cxx_std_11)
+
+add_executable(v8_shell samples/shell.cc)
+target_include_directories(v8_shell PRIVATE include)
+target_link_libraries(v8_shell v8)
+
+add_custom_command(
+  OUTPUT d8-js.cc
+  COMMAND python2 
+    ${CMAKE_CURRENT_SOURCE_DIR}/tools/js2c.py
+    ${CMAKE_CURRENT_BINARY_DIR}/d8-js.cc
+    ${CMAKE_CURRENT_BINARY_DIR}/d8-js-empty.cc
+    D8
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/d8.js
+)
+add_executable(d8 src/d8.cc src/d8-debug.cc src/d8-posix.cc
+  ${CMAKE_CURRENT_BINARY_DIR}/d8-js.cc
+)
+
+target_include_directories(d8 PRIVATE src)
+target_link_libraries(d8 v8)
+
+add_executable(v8_cctest
+  test/cctest/cctest.cc
+  test/cctest/test-alloc.cc
+  test/cctest/test-api.cc
+  test/cctest/test-ast.cc
+  test/cctest/test-compiler.cc
+  test/cctest/test-conversions.cc
+  test/cctest/test-debug.cc
+  test/cctest/test-decls.cc
+  test/cctest/test-flags.cc
+  test/cctest/test-func-name-inference.cc
+  test/cctest/test-hashmap.cc
+  test/cctest/test-heap.cc
+  test/cctest/test-list.cc
+  test/cctest/test-lock.cc
+  test/cctest/test-log.cc
+  test/cctest/test-log-utils.cc
+  test/cctest/test-mark-compact.cc
+  test/cctest/test-regexp.cc
+  test/cctest/test-serialize.cc
+  test/cctest/test-sockets.cc
+  test/cctest/test-spaces.cc
+  test/cctest/test-strings.cc
+  test/cctest/test-threads.cc
+  test/cctest/test-utils.cc
+  test/cctest/test-version.cc
+
+  # for MacOS
+  test/cctest/test-platform-macos.cc
+)
+target_include_directories(v8_cctest PRIVATE src)
+target_link_libraries(v8_cctest v8)

@@ -93,6 +93,7 @@ int main(int argc, char* argv[]) {
           if (test->enabled()
               && strcmp(test->file(), file) == 0
               && strcmp(test->name(), name) == 0) {
+            printf("running %s.%s \n", test->file(), test->name());
             test->Run();
             tests_run++;
           }
@@ -107,6 +108,7 @@ int main(int argc, char* argv[]) {
           if (test->enabled()
               && (strcmp(test->file(), file_or_name) == 0
                   || strcmp(test->name(), file_or_name) == 0)) {
+            printf("running %s.%s \n", test->file(), test->name());
             test->Run();
             tests_run++;
           }
@@ -116,7 +118,7 @@ int main(int argc, char* argv[]) {
       v8::internal::DeleteArray<char>(arg_copy);
     }
   }
-  if (print_run_count && tests_run != 1)
+  if (print_run_count && tests_run != 0)
     printf("Ran %i tests.\n", tests_run);
   v8::V8::Dispose();
   return 0;
