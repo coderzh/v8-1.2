@@ -1,0 +1,16 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "start",
+      "type": "cppdbg",
+      "request": "launch",
+      "program": "${workspaceFolder}/build/v8_test",
+      "args": [],
+      "stopAtEntry": false,
+      "cwd": "${workspaceFolder}/build",
+      "environment": [],
+      "MIMode": "lldb"
+    }
+  ]
+}
