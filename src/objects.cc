@@ -7358,7 +7358,7 @@ Object* Dictionary<Shape, Key>::DeleteProperty(int entry,
 
 template<typename Shape, typename Key>
 Object* Dictionary<Shape, Key>::AtPut(Key key, Object* value) {
-  int entry = FindEntry(key);
+  int entry = this->FindEntry(key);
 
   // If the entry is present set the value;
   if (entry != Dictionary<Shape, Key>::kNotFound) {

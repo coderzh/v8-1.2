@@ -118,14 +118,15 @@ bool OS::IsOutsideAllocatedSpace(void* address) {
 
 
 size_t OS::AllocateAlignment() {
-  return getpagesize();
+  return sysconf(_SC_PAGESIZE);
+  // return getpagesize();
 }
 
 
 void* OS::Allocate(const size_t requested,
                    size_t* allocated,
                    bool is_executable) {
-  const size_t msize = RoundUp(requested, getpagesize());
+  const size_t msize = RoundUp(requested, AllocateAlignment());
   int prot = PROT_READ | PROT_WRITE | (is_executable ? PROT_EXEC : 0);
   void* mbase = mmap(NULL, msize, prot, MAP_PRIVATE | MAP_ANON, -1, 0);
   if (mbase == MAP_FAILED) {
