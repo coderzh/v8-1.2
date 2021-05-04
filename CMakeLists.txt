@@ -1,5 +1,7 @@
 cmake_minimum_required (VERSION 3.5)
 
+project (v8)
+
 add_definitions(-D_XOPEN_SOURCE=600)
 add_definitions(-D_DARWIN_C_SOURCE)
 add_definitions(-DV8_TARGET_ARCH_X64)
@@ -7,8 +9,6 @@ add_definitions(-DCMAKE_EXPORT_COMPILE_COMMANDS=YES)
 
 set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fms-extensions -fno-strict-aliasing")
 set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fms-extensions -fno-strict-aliasing")
-
-project (v8)
 
 set(THREADS_PREFER_PTHREAD_FLAG ON)
 find_package(Threads REQUIRED)
@@ -132,13 +132,34 @@ file(GLOB V8_SRC
   # for macos
   src/platform-macos.cc
   src/platform-posix.cc
-  # no snapshot
-  src/snapshot-empty.cc
 )
 
-add_library(v8 STATIC ${V8_SRC}
+add_executable(mksnapshot 
+  ${V8_SRC}
   ${CMAKE_CURRENT_BINARY_DIR}/libraries.cc
-)
+  src/mksnapshot.cc
+  src/snapshot-empty.cc)
+target_include_directories(mksnapshot PRIVATE src)
+target_link_libraries(mksnapshot dtoa)
+
+if (USE_SNAPSHOT)
+  add_custom_command(
+    OUTPUT snapshot.cc
+    COMMAND ${CMAKE_CURRENT_BINARY_DIR}/mksnapshot
+      snapshot.cc
+    DEPENDS mksnapshot
+  )
+  add_library(v8 STATIC ${V8_SRC}
+    ${CMAKE_CURRENT_BINARY_DIR}/libraries.cc
+    ${CMAKE_CURRENT_BINARY_DIR}/snapshot.cc
+  )
+else()
+  add_library(v8 STATIC ${V8_SRC}
+    ${CMAKE_CURRENT_BINARY_DIR}/libraries.cc
+    src/snapshot-empty.cc
+  )
+endif()
+
 target_include_directories(v8 PRIVATE src)
 target_link_libraries(v8 dtoa)
 
@@ -163,7 +184,6 @@ add_custom_command(
 add_executable(d8 src/d8.cc src/d8-debug.cc src/d8-posix.cc
   ${CMAKE_CURRENT_BINARY_DIR}/d8-js.cc
 )
-
 target_include_directories(d8 PRIVATE src)
 target_link_libraries(d8 v8)
 

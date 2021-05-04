@@ -6,7 +6,7 @@
     {
       "label": "build",
       "type": "shell",
-      "command": "mkdir -p build;cd build;cmake .. -DCMAKE_BUILD_TYPE=debug -DCMAKE_EXPORT_COMPILE_COMMANDS=YES;make",
+      "command": "mkdir -p build;cd build;cmake .. -DCMAKE_BUILD_TYPE=debug -DUSE_SNAPSHOT=1;make",
       "group": {
         "kind": "build",
         "isDefault": true

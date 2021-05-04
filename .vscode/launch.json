@@ -2,11 +2,22 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "start",
+      "name": "v8_test",
       "type": "cppdbg",
       "request": "launch",
       "program": "${workspaceFolder}/build/v8_test",
       "args": [],
+      "stopAtEntry": false,
+      "cwd": "${workspaceFolder}/build",
+      "environment": [],
+      "MIMode": "lldb"
+    },
+    {
+      "name": "mksnapshot",
+      "type": "cppdbg",
+      "request": "launch",
+      "program": "${workspaceFolder}/build/mksnapshot",
+      "args": ["snapshot.cc"],
       "stopAtEntry": false,
       "cwd": "${workspaceFolder}/build",
       "environment": [],
