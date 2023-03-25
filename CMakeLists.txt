@@ -5,7 +5,6 @@ project (v8)
 add_definitions(-D_XOPEN_SOURCE=600)
 add_definitions(-D_DARWIN_C_SOURCE)
 add_definitions(-DV8_TARGET_ARCH_X64)
-add_definitions(-DCMAKE_EXPORT_COMPILE_COMMANDS=YES)
 
 set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fms-extensions -fno-strict-aliasing")
 set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fms-extensions -fno-strict-aliasing")
