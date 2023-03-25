@@ -24,7 +24,7 @@ target_link_libraries(dtoa PRIVATE Threads::Threads)
 
 add_custom_command(
   OUTPUT libraries.cc
-  COMMAND python2 
+  COMMAND python3
     ${CMAKE_CURRENT_SOURCE_DIR}/tools/js2c.py
     ${CMAKE_CURRENT_BINARY_DIR}/libraries.cc
     ${CMAKE_CURRENT_BINARY_DIR}/ibraries-empty.cc
@@ -174,7 +174,7 @@ target_link_libraries(v8_shell v8)
 
 add_custom_command(
   OUTPUT d8-js.cc
-  COMMAND python2 
+  COMMAND python3
     ${CMAKE_CURRENT_SOURCE_DIR}/tools/js2c.py
     ${CMAKE_CURRENT_BINARY_DIR}/d8-js.cc
     ${CMAKE_CURRENT_BINARY_DIR}/d8-js-empty.cc
